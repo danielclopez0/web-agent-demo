@@ -1,10 +1,34 @@
+import { useState } from 'react'
+import type { User, Order } from './types'
+import { SEED_ORDERS } from './data/seed'
+import { LoginPage } from './pages/LoginPage'
+import { OrdersPage } from './pages/OrdersPage'
+import { NewOrderPage } from './pages/NewOrderPage'
+import { Layout } from './components/Layout'
+
+type Page = 'orders' | 'new-order'
+
 export default function App() {
+  const [user, setUser] = useState<User | null>(null)
+  const [page, setPage] = useState<Page>('orders')
+  const [orders, setOrders] = useState<Order[]>(SEED_ORDERS)
+
+  if (!user) return <LoginPage onLogin={setUser} />
+
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-md p-8 max-w-md">
-        <h1 className="text-2xl font-bold text-slate-900">DemoCorp ERP</h1>
-        <p className="mt-2 text-slate-600">Tailwind v3 smoke check.</p>
-      </div>
-    </div>
+    <Layout
+      user={user}
+      currentPage={page}
+      onNavigate={setPage}
+      onSignOut={() => setUser(null)}
+    >
+      {page === 'orders' && <OrdersPage orders={orders} />}
+      {page === 'new-order' && (
+        <NewOrderPage
+          onCreate={(order) => setOrders([order, ...orders])}
+          onCancel={() => setPage('orders')}
+        />
+      )}
+    </Layout>
   )
 }
