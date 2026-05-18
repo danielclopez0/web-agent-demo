@@ -11,6 +11,11 @@ node_modules
 dist
 dist-ssr
 *.local
+*.tsbuildinfo
+
+# Agent-generated artifacts (downloads + reports from the demo flow)
+exports/
+reports/
 .devin/config.local.json
 .devin/*.local.json
 
