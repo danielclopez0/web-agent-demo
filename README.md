@@ -63,7 +63,7 @@ cd web-agent-demo
 "run the demo"
 ```
 
-The agent reads `AGENTS.md`, finds `.devin/skills/demo/`, and runs the full walkthrough.
+The agent reads `AGENTS.md`, finds `.devin/skills/run-demo/`, and walks the 7 phases (login → filter → export → analyze → HTML report → open).
 
 ## Other things to say
 
@@ -94,7 +94,7 @@ You log in (the agent never sees your credentials). Then:
 "summarize what's on this page"
 ```
 
-See [.devin/skills/browse/SKILL.md](.devin/skills/browse/SKILL.md) for the full BYO-site workflow including training the agent on a new site.
+See [.devin/skills/browse/SKILL.md](.devin/skills/browse/SKILL.md) for the BYO-site contract (security + training mode) and [.devin/skills/democorp/SKILL.md](.devin/skills/democorp/SKILL.md) for the copy-paste template when you're ready to write a skill for a site of your own.
 
 ### Security (please read)
 
@@ -120,8 +120,10 @@ web-agent-demo/
 ├── tests/smoke.spec.ts  One Playwright test (login + export + new order)
 ├── AGENTS.md            Agent contract (auto-read by coding agents)
 ├── .devin/skills/       The actual product
-│   ├── demo/            Worked DemoCorp walkthrough
-│   ├── browse/          BYO-site flow
+│   ├── playwright-mcp/  MCP reference (tools, idioms, gotchas)
+│   ├── browse/          Generic BYO-site contract + training mode
+│   ├── democorp/        DemoCorp site reference + template for your own
+│   ├── run-demo/        7-phase worked walkthrough (the wow moment)
 │   └── analyze/         CSV → HTML report
 ├── docs/superpowers/    Design spec + implementation plan
 └── public/              Static assets

@@ -8,47 +8,50 @@ When operating any website, you are acting with the user's credentials and permi
 
 1. **Read-only by default.** Navigating and reading is always safe. Do it freely.
 2. **Ask before any write action.** Before clicking Submit, Save, Delete, Approve, Send, or anything that modifies data, tell the user exactly what you're about to do and wait. Example: *"I'm about to click 'Submit Order' which will create a PO for $5,000. Proceed?"*
-3. **Never enter credentials for external sites.** The user handles all login, MFA, and security challenges. The DemoCorp sandbox is the only exception — use the demo credentials below.
+3. **Never enter credentials for external sites.** The user handles all login, MFA, and security challenges. The DemoCorp sandbox is the only exception — use the demo credentials documented in `.devin/skills/democorp/SKILL.md`.
 4. **Flag destructive actions clearly.** If you see Delete, Archive, Revoke, Transfer: *"This would permanently delete [X]. Are you sure?"*
 5. **Stay in scope.** Only visit pages and perform actions the user asked for.
 
 **Recommend to users:** for real systems, suggest a limited or service account rather than personal credentials. Start with read-only permissions and expand only as needed.
 
+## Skills map
+
+Five skills, each with one responsibility. Load them as you need them.
+
+| Skill | What it owns |
+|---|---|
+| [`.devin/skills/playwright-mcp/SKILL.md`](./.devin/skills/playwright-mcp/SKILL.md) | **Reference** — Playwright MCP tools, snapshot/ref idioms, download capture pattern, `file://` workaround, console-error checks. Every other skill links here for mechanics. |
+| [`.devin/skills/browse/SKILL.md`](./.devin/skills/browse/SKILL.md) | **Contract** — generic BYO-site flow: security rules, user-handles-login pattern, training mode for teaching new sites. |
+| [`.devin/skills/democorp/SKILL.md`](./.devin/skills/democorp/SKILL.md) | **Template + site reference** — how to operate DemoCorp specifically, *also* shaped as a copy-paste template for writing your own site-control skill. |
+| [`.devin/skills/run-demo/SKILL.md`](./.devin/skills/run-demo/SKILL.md) | **Orchestrator** — the 7-phase worked walkthrough (login → filter → export → analyze → HTML report → open). Composes democorp + analyze. |
+| [`.devin/skills/analyze/SKILL.md`](./.devin/skills/analyze/SKILL.md) | **Artifact builder** — CSV → self-contained HTML report with charts. |
+
 ## What you can do
 
 ### DemoCorp sandbox (this repo's bundled app)
 
-| User says | Run |
-|-----------|-----|
-| "run the demo" | `.devin/skills/demo/SKILL.md` — full worked walkthrough |
-| "create an order for ..." | Fill the New Order form with what they described, submit it |
-| "export the orders / approved orders" | Click Export CSV (filter first if needed). Save the file to `./exports/` in this repo, not `~/Downloads` |
-| "analyze the CSV / make me a report" | `.devin/skills/analyze/SKILL.md` |
-| "run the tests" | `npm test` (or `npx playwright test --headed` to watch) |
+| User says | Skill to follow |
+|-----------|---|
+| "run the demo" | `run-demo/` |
+| "create an order for ..." / "submit a PO" / "filter orders" / "export the CSV" | `democorp/` |
+| "analyze this CSV" / "make me a report" | `analyze/` |
+| "run the tests" | shell: `npm test` (or `npx playwright test --headed` to watch) |
 
 ### Any website
 
-| User says | Run |
-|-----------|-----|
-| "go to [url]" / "open [site]" | `.devin/skills/browse/SKILL.md` |
-| "do [task] on [site]" | Navigate, user logs in, you do the work (with the security rules above) |
+| User says | Skill to follow |
+|-----------|---|
+| "go to [url]" / "open [site]" / "do [task] on [site]" | `browse/` |
+| "let's explore [site]" / "teach you how to use [tool]" | `browse/` (training mode) — produces a new `.devin/skills/<site>/SKILL.md` modeled on `democorp/` |
 
-## DemoCorp setup
+## DemoCorp quick-reference
 
-- **Dev server**: `npm run dev` on `http://localhost:5173`. Start it if not running.
-- **Login**: `john.smith@acme-corp.com` / `Acme2024!`
-- **Pages**: `/` (login), then in-app nav between Orders and New Order
+- Dev server: `npm run dev` on `http://localhost:5173`. Start it if not running.
+- Login: `john.smith@acme-corp.com` / `Acme2024!`.
+- Three pages: login, Orders (list + filter + Export CSV), New Order (form).
 
-## Browser-control essentials (Playwright MCP)
-
-Key tools:
-- `browser_navigate` — go to URL
-- `browser_snapshot` — **call after every navigation** to get fresh element refs
-- `browser_click`, `browser_fill_form` — interact
-- `browser_console_messages` — check errors
-
-Element refs (`e14` etc.) invalidate on navigation. Re-snapshot.
+Full details + page contracts in `.devin/skills/democorp/SKILL.md`.
 
 ## Downloads — save to the project, not `~/Downloads`
 
-For DemoCorp's Export CSV (and any equivalent on other sites): use the Playwright download event to redirect the file to `./exports/` in this repo. The agent skill files demonstrate the pattern.
+This is the demo's distinguishing mechanic. The download-capture pattern (Playwright `download.saveAs()`) lives in `.devin/skills/playwright-mcp/SKILL.md` and is referenced from `democorp/`, `browse/`, and `run-demo/`.
