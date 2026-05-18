@@ -43,8 +43,10 @@ If the user said "look for anomalies" or "find outliers," add: rows >2σ from th
 6. Style: system font stack, slate/blue palette, subtle borders, no animations needed. Keep it under 800 lines of HTML/CSS/JS combined.
 
 ### 5. Open it
-7. `browser_navigate` to `file:///<absolute-path-to-report>` (resolve the path with `realpath`).
-8. `browser_snapshot` to confirm the page rendered.
+7. Most Playwright MCPs block `file://` URLs. Two ways that work:
+   - **If the DemoCorp dev server is running** (most common case after the demo flow): navigate to `http://localhost:5173/reports/<basename>.html`. Vite serves arbitrary project files at the root path.
+   - **Otherwise**: `open ./reports/<basename>.html` (macOS) or `xdg-open ./reports/<basename>.html` (Linux). Launches the user's default browser outside Playwright; you won't be able to snapshot it, but the user sees the payoff.
+8. If using the dev-server path: `browser_snapshot` to confirm the page rendered.
 9. Tell the user the report path and what's notable.
 
 ## Example narrative line

@@ -33,8 +33,19 @@ Operate any website the user points you at. The user handles login (you never se
 ### 4. Downloads
 If the task involves downloading data (CSV, PDF, export):
 - Save the file to `./exports/` in the current project, not `~/Downloads`.
-- Use the Playwright download event (`page.waitForEvent('download')` + `download.saveAs(path)`) if the MCP exposes it.
-- Fallback: inspect the page, find the download URL, `curl` it directly into `./exports/`.
+- **Primary path** — Playwright download event. With `@nichochar/playwright-mcp` + a `run_code_unsafe`-style tool:
+
+  ```js
+  async (page) => {
+    const path = `<absolute-project-path>/exports/<filename>`
+    const downloadPromise = page.waitForEvent('download')
+    await page.getByRole('button', { name: '<Export button name>' }).click()
+    await (await downloadPromise).saveAs(path)
+    return path
+  }
+  ```
+
+- **Fallback** — if your MCP doesn't expose downloads, inspect the page (`browser_snapshot` or DOM read) to find the download URL, then `curl -o ./exports/<filename> <url>` directly. You lose the "user pressed the real button" narration but the data still lands in the right place.
 
 ### 5. Reporting back
 After any work, summarize:

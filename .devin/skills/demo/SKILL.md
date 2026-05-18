@@ -31,8 +31,21 @@ Narrate: *"Logged in as John Smith, Procurement Manager. Now on the Orders page 
 
 ### 3. Filter + export the CSV
 6. Click the **Approved** filter button. `browser_snapshot` to confirm only Approved rows remain.
-7. Set up a download listener BEFORE clicking export. In Playwright MCP, this is typically `page.waitForEvent('download')` orchestrated by the MCP itself — check the MCP's docs for the exact form. The goal: capture the download to `./exports/orders-approved-<timestamp>.csv` in the project root, NOT `~/Downloads`.
-8. Click **Export CSV**. Save the download to the project path.
+7. Capture the download to the project's `exports/` directory using Playwright's download event. With a Playwright MCP that exposes a `run_code_unsafe`-style tool (or a dedicated download wrapper), the pattern is:
+
+   ```js
+   async (page) => {
+     const ts = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+     const path = `<absolute-project-path>/exports/orders-approved-${ts}.csv`
+     const downloadPromise = page.waitForEvent('download')
+     await page.getByTestId('export-csv-btn').click()
+     const download = await downloadPromise
+     await download.saveAs(path)
+     return path
+   }
+   ```
+
+8. Verified working with `@nichochar/playwright-mcp` and `mcp__playwright__browser_run_code_unsafe` during the rebuild dry-run. If your MCP does not expose download handling, fall back to `curl` — see `.devin/skills/browse/SKILL.md`.
 
 Narrate: *"Exporting the approved orders. This is the trick that turns a browser demo into something useful — the file lands in the project directory where I can do real work with it locally."*
 
@@ -54,7 +67,7 @@ Narrate: *"Exporting the approved orders. This is the trick that turns a browser
 12. The report MUST work without internet (avoid CDN-only deps where possible; if you use Chart.js, mention that the user needs to be online when opening — or generate inline SVG).
 
 ### 6. Show the payoff
-13. `browser_navigate` to `file:///<absolute-path-to-reports>/orders-approved-<timestamp>.html`.
+13. Open the report in the browser. Most Playwright MCPs block `file://` URLs for security, so use the running Vite dev server instead — it serves any file under the project root. Navigate to `http://localhost:5173/reports/orders-approved-<timestamp>.html`. (If the dev server isn't running, start it first, or `open ./reports/<filename>` to launch the user's default browser outside of Playwright.)
 14. `browser_snapshot` and narrate what's on the report.
 
 Narrate: *"This is the bridge — the agent operated a real-looking corporate app, captured live data, then synthesized a presentable report locally. One prompt, three different modalities."*
