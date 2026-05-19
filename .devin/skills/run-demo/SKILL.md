@@ -70,12 +70,43 @@ The 7-phase worked example that demonstrates the **browser → CSV → local HTM
 
 **Narrate:** *"And here's the bridge closing. The agent operated a real-looking corporate app, captured live data, then synthesized a presentable report locally. One prompt, three modalities — web operation, file work, data visualization."*
 
-### Phase 7 — Wrap
-17. Summarize for the user:
-    - The two file paths created (`exports/<...>.csv`, `reports/<...>.html`)
-    - The headline numbers (total spend, largest order, vendor count)
-    - What they can do next: "filter by a different status and re-export," "point me at one of your own sites," "ask me to analyze a CSV you already have"
-18. Leave the browser open on the report
+### Phase 7 — Wrap and engage
+
+The finished demo is the most important moment of the whole flow — the user just watched a complete loop, their attention is on you, and they're forming an opinion about whether this is *actually useful to them*. Don't waste it on a goodbye. See the **Engagement principle** in `AGENTS.md`.
+
+17. **One-paragraph recap.** Headline numbers + file paths. Keep it tight.
+
+    Example: *"Quick recap: $62,400 across 4 approved orders, top vendor Vertex at $26K, full report saved to `reports/orders-approved-2026-05-18T18-38-43.html`. Browser is still open on it."*
+
+18. **Ask one open question about the user.** Don't suggest yet — listen first. Pick whichever fits the moment:
+
+    - *"Now I'm curious — what do you actually work on day-to-day? Even a short answer helps me suggest where to go next."*
+    - *"Is there a tool you use that you wish had an API, but doesn't?"*
+    - *"What's a workflow you do by hand right now that you'd want an agent to take over?"*
+
+    Use prose here. This is context-gathering, not a multiple-choice question. Wait for the answer.
+
+19. **Based on the answer, offer a specific next step.** This is where a structured-question tool earns its keep — if your platform exposes one (`AskUserQuestion` in Claude Code, interactive prompts in Devin, etc.), use it to offer 2–3 concrete branches:
+
+    Examples of structured follow-ups (pick the one that matches their answer):
+
+    - User mentioned a specific tool/SaaS: `["Point me at it — I'll open it and we'll explore" | "Just curious for now, no need to operate it" | "Show me a different DemoCorp flow instead"]`
+    - User described a workflow they do by hand: `["Walk me through it on the real tool" | "Show me how I'd write a skill for it" | "Not now — what else can DemoCorp demo?"]`
+    - User said "I just wanted to see what's possible": `["Want me to analyze a CSV you already have lying around?" | "Want to see the same flow with a different filter?" | "Good — I'll be here when you have something specific"]`
+
+    The branch they pick tells you exactly which skill to load next:
+    - "Point me at it" / "Walk me through it" → `../browse/SKILL.md`
+    - "Different DemoCorp flow" → `../democorp/SKILL.md`
+    - "Analyze a CSV" → `../analyze/SKILL.md`
+    - "Write a skill for it" → `../browse/SKILL.md` training mode section
+
+20. **One question at a time.** Don't stack three questions hoping one lands. Ask, wait, respond, repeat.
+
+21. **Always accept open input.** If they type something off-menu (*"actually can you re-export but only orders over $10K?"*), that's the most useful kind of answer — they're telling you exactly what they want. Run it.
+
+22. **Stop when they signal stop.** *"Cool, that's enough"* / *"thanks, I'll explore on my own"* → leave the browser open, summarize what they have in `./reports/` and `./exports/`, exit cleanly. Don't push for more.
+
+23. **Leave the browser open** on the report regardless of how the conversation ends — it's a passive reminder of what just happened.
 
 ## Artifacts after a successful run
 

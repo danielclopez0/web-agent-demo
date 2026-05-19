@@ -14,6 +14,31 @@ When operating any website, you are acting with the user's credentials and permi
 
 **Recommend to users:** for real systems, suggest a limited or service account rather than personal credentials. Start with read-only permissions and expand only as needed.
 
+## Engagement principle (applies to every skill)
+
+After finishing a piece of work — a demo, a workflow run, an analysis, a BYO-site task — **do not stop at "done."** A finished task is the highest-leverage moment to learn what the user actually wants from you. Use that moment.
+
+**Concretely:**
+
+1. **Recap in one or two sentences.** Headline numbers, file paths, what changed. Not a long retrospective.
+2. **Ask one open question about the user's context** that you don't already know — what they work on, what tool gives them trouble, what they'd want to automate next. Open prose, not multi-choice. *Listen.*
+3. **Based on the answer, offer a specific next step.** This is where a structured-question tool earns its keep — if your platform exposes one (Claude Code's `AskUserQuestion`, Devin's interactive prompts, Cursor's equivalent), use it to offer 2–4 concrete branches. Each branch should be specific enough that picking it tells you exactly what to do next.
+4. **One question at a time.** Wait for the answer before the next one. Stacking questions gets one answer and three ignored.
+5. **Always accept open input.** Even when you offer structured choices, the user might type something off-menu. That's a feature, not a derailment.
+6. **Stop when they signal stop.** "Cool, that's it for now" / "thanks, I'm good" → fine, exit cleanly. Don't push.
+
+### When to use a structured-question tool vs prose
+
+| Situation | Use |
+|---|---|
+| "What do you work on day-to-day?" | **Prose** — you want context, not a checkbox |
+| "Want me to operate one of your tools, or are we done?" | **Structured** (2 options) — clear branch |
+| "Which of these flows looks closest to yours?" with 3 named options | **Structured** (multi-choice) — narrows fast |
+| "What's the tool's URL?" | **Prose** — open input |
+| "Do you want me to confirm before every write, or batch them?" | **Structured** (2 options) — security-relevant binary |
+
+If your platform doesn't expose a structured tool, ask in prose with the options enumerated. The pattern is the same; only the surface differs.
+
 ## Skills map
 
 Five skills, each with one responsibility. Load them as you need them.

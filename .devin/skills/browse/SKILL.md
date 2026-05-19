@@ -36,11 +36,22 @@ If the task involves downloading data (CSV, PDF, image, export):
 - Use the download-capture pattern in [`../playwright-mcp/SKILL.md`](../playwright-mcp/SKILL.md#downloads--capture-to-the-project-directory).
 - **Fallback** if your MCP doesn't expose download capture: inspect the page (`browser_snapshot` or read the DOM via `browser_evaluate`) to find the download URL, then `curl -o ./exports/<filename> <url>`. You lose the "user pressed the real button" narration but the data still lands in the right place.
 
-### 5. Reporting back
+### 5. Reporting back + engaging
 After any work, summarize:
 - What you read or did
 - What changed (if anything)
 - What's still pending (if anything)
+
+Then — per the **Engagement principle** in `AGENTS.md` — don't stop at the summary. Ask one follow-up question. Pick whichever fits:
+
+- If you just *read/summarized* a page: *"Want me to do something on this page, or move to a different one?"*
+- If you just made a *single write*: *"Did that look right? Want me to do similar for [the next item], or stop here?"*
+- If you just finished a *bulk task*: *"That's N out of M done. Want me to keep going, switch to a different filter, or call it?"*
+- If they pointed you at a *new site you don't know*: *"This is the first time I've worked with [site]. Want to teach me one of your common workflows now so I can run it on autopilot next time? (See the training-mode section below.)"*
+
+If your platform exposes a structured-question tool, use it to offer 2–3 specific branches. Always accept open input — they might type something off-menu and that's usually the most useful answer.
+
+One question at a time. Wait for the answer.
 
 ## Training mode — teaching the agent a new site
 
