@@ -64,8 +64,8 @@ The 7-phase worked example that demonstrates the **browser → CSV → local HTM
 13. Follow [`../analyze/SKILL.md`](../analyze/SKILL.md) to produce a single self-contained HTML file at `./reports/orders-approved-<ts>.html`. Use the timestamp from Phase 3 so the file pair stays grouped.
 
 ### Phase 6 — Show the payoff
-14. `browser_navigate` to `http://localhost:5173/reports/orders-approved-<ts>.html` (Vite serves arbitrary files under the project root; `file://` is blocked by the MCP — see [`../playwright-mcp/SKILL.md`](../playwright-mcp/SKILL.md))
-15. `browser_snapshot` to confirm it rendered; `browser_console_messages level="error"` — favicon.ico 404 is benign, ignore it
+14. Open the report in a **new browser tab** with `browser_tabs action="new" url="http://localhost:5173/reports/orders-approved-<ts>.html"` (Vite serves arbitrary files under the project root; `file://` is blocked by the MCP — see [`../playwright-mcp/SKILL.md`](../playwright-mcp/SKILL.md)). Leave the DemoCorp ERP tab open behind it so the audience can see the handoff from app → generated artifact.
+15. `browser_snapshot` in the new tab to confirm it rendered; `browser_console_messages level="error"` — favicon.ico 404 is benign, ignore it
 16. `browser_take_screenshot` so the user can see the result in the conversation
 
 **Narrate:** *"And here's the bridge closing. The agent operated a real-looking corporate app, captured live data, then synthesized a presentable report locally. One prompt, three modalities — web operation, file work, data visualization."*
