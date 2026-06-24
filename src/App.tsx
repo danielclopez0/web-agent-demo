@@ -8,19 +8,40 @@ import { Layout } from './components/Layout'
 
 type Page = 'orders' | 'new-order'
 
+const USER_STORAGE_KEY = 'democorp:user'
+
+const loadUser = (): User | null => {
+  try {
+    const raw = localStorage.getItem(USER_STORAGE_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
 export default function App() {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null>(() => loadUser())
   const [page, setPage] = useState<Page>('orders')
   const [orders, setOrders] = useState<Order[]>(SEED_ORDERS)
 
-  if (!user) return <LoginPage onLogin={setUser} />
+  const handleLogin = (nextUser: User) => {
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser))
+    setUser(nextUser)
+  }
+
+  const handleSignOut = () => {
+    localStorage.removeItem(USER_STORAGE_KEY)
+    setUser(null)
+  }
+
+  if (!user) return <LoginPage onLogin={handleLogin} />
 
   return (
     <Layout
       user={user}
       currentPage={page}
       onNavigate={setPage}
-      onSignOut={() => setUser(null)}
+      onSignOut={handleSignOut}
     >
       {page === 'orders' && (
         <OrdersPage

@@ -77,7 +77,7 @@ Six skills, each with one responsibility. Load them as you need them.
 ## DemoCorp quick-reference
 
 - Dev server: `npm run dev` on `http://localhost:5173`. Start it if not running.
-- Login: `john.smith@democorp.example` / `Acme2024!`.
+- Login: service user `service.user@democorp.example`; presenter enters any non-empty password during the demo.
 - Three pages: login, Orders (list + filter + **search** + per-row **Approve** + Export CSV), New Order (form).
 - **TestTrack** (the mock QA tool, a separate "site"): `http://localhost:5173/qa.html`. A Jira-style board of manual test cases to automate. Tickets are mutable at runtime via `window.testtrack` (the "TestTrack MCP" shim in `src/qa/store.ts`) — the agent uses it to mark a story Done and comment a PR link. Owned by `qa-demo/`.
 

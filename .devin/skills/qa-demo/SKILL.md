@@ -88,10 +88,11 @@ Then **stop**. If the trigger was only "show me our test cases," wait for the pr
 **Narrate:** *"ERP-201 says: search should narrow the table across PO #, vendor, and description, and clearing it restores everything. Let me go do that in the ERP now."*
 
 ### C. Validate live in the browser
-6. `browser_navigate` to `http://localhost:5173/` and log into DemoCorp using the sandbox creds (see [`../democorp/SKILL.md`](../democorp/SKILL.md) — it's the only site where the agent enters credentials).
-7. Execute the case's steps with `browser_snapshot` between state changes. Narrate each step against the test case's expected result.
-8. **Security checkpoint — confirm before any write.** Per `AGENTS.md`: reading/filtering/searching is free, but **ERP-202 approves an order, which is a write.** Before clicking Approve, say: *"ERP-202 wants me to approve PO-2026-003. That's a state change. Confirm and I'll click Approve."* Wait for yes.
-9. After the steps, state plainly whether the observed behavior matched the expected result.
+6. `browser_navigate` to `http://localhost:5173/`. The QA demo expects the DemoCorp session created during `run-demo/` to still be present in the same Playwright browser, so it should land directly on Orders.
+7. If the login page appears anyway, **do not enter credentials**. Tell the presenter: *"I need the DemoCorp session before I can validate the test case. The service user is prefilled; for this sandbox, any password works. Please enter a password, click Sign In, and tell me when you're in."* Wait, then re-snapshot.
+8. Execute the case's steps with `browser_snapshot` between state changes. Narrate each step against the test case's expected result.
+9. **Security checkpoint — confirm before any write.** Per `AGENTS.md`: reading/filtering/searching is free, but **ERP-202 approves an order, which is a write.** Before clicking Approve, say: *"ERP-202 wants me to approve PO-2026-003. That's a state change. Confirm and I'll click Approve."* Wait for yes.
+10. After the steps, state plainly whether the observed behavior matched the expected result.
 
 Per-case validation hints:
 
@@ -99,12 +100,12 @@ Per-case validation hints:
 - **ERP-202 (approve):** find a Submitted order (e.g. `PO-2026-003`), click `getByTestId('approve-btn-PO-2026-003')` **after presenter confirms**, verify `getByTestId('status-PO-2026-003')` now reads `Approved` and the row's Approve button is gone.
 
 ### D. Presenter approval gate — DO NOT SKIP
-10. Ask explicitly: *"Did that match what ERP-201 expects? If you're happy, I'll write the automated test."* **Wait.** This is the moment the presenter wants to own ("after my approval that it did it correctly"). Do not write the test until they confirm.
+11. Ask explicitly: *"Did that match what ERP-201 expects? If you're happy, I'll write the automated test."* **Wait.** This is the moment the presenter wants to own ("after my approval that it did it correctly"). Do not write the test until they confirm.
 
 ### E. Write the durable Playwright test
-11. Add a new spec under `tests/`, named for the case: `tests/erp-201-order-search.spec.ts` (or `erp-202-approve-order.spec.ts`). One `test()` per case key; put the case key in the test title.
-12. **Model it on `tests/smoke.spec.ts`** — same login preamble, same selector conventions (`getByLabel`, `getByRole`, `getByTestId`). Assert the case's **expected result** specifically, not just "page loaded."
-13. Keep it focused: this test should fail if that one behavior regresses. Don't re-test the whole app.
+12. Add a new spec under `tests/`, named for the case: `tests/erp-201-order-search.spec.ts` (or `erp-202-approve-order.spec.ts`). One `test()` per case key; put the case key in the test title.
+13. **Model it on `tests/smoke.spec.ts`** — same login preamble, same selector conventions (`getByLabel`, `getByRole`, `getByTestId`). Assert the case's **expected result** specifically, not just "page loaded."
+14. Keep it focused: this test should fail if that one behavior regresses. Don't re-test the whole app.
 
 Skeleton (adapt to the chosen case):
 
@@ -113,8 +114,8 @@ import { test, expect } from '@playwright/test'
 
 test('ERP-201 — search narrows orders by vendor / PO # / description', async ({ page }) => {
   await page.goto('/')
-  await page.getByLabel('Corporate Email').fill('john.smith@democorp.example')
-  await page.getByLabel('Password').fill('Acme2024!')
+  await page.getByLabel('Corporate Email').fill('service.user@democorp.example')
+  await page.getByLabel('Password').fill('anything-works')
   await page.getByTestId('sign-in-btn').click()
   await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
 
@@ -135,25 +136,25 @@ test('ERP-201 — search narrows orders by vendor / PO # / description', async (
 For ERP-202, click `getByTestId('approve-btn-PO-2026-003')` and assert `getByTestId('status-PO-2026-003')` has text `Approved`.
 
 ### F. Run the suite headed (the payoff)
-14. `npm run test:headed` so the audience watches every test drive a real browser — the old smoke test **plus the one just written**.
-15. Report the pass count. *"Five tests now, all green — the case we validated by hand a minute ago is permanent regression coverage."*
+15. `npm run test:headed` so the audience watches every test drive a real browser — the old smoke test **plus the one just written**.
+16. Report the pass count. *"Five tests now, all green — the case we validated by hand a minute ago is permanent regression coverage."*
 
 ### G. Create the PR (presenter says "create a pr")
 This is a **real** GitHub PR — branch, commit, push, open. It's a write to the remote, so follow the git rules in the global instructions (no force-push, don't push to `main`, etc.).
 
-16. Create a branch off the current one: `git checkout -b qa/<case-key-lower>-automation` (e.g. `qa/erp-201-automation`).
-17. Stage **only the new test file** (and any app fix the case revealed): `git add tests/erp-201-order-search.spec.ts`.
-18. Commit with a message referencing the case key (use the repo's commit format with the Devin trailer).
-19. `git push -u origin qa/erp-201-automation`.
-20. `gh pr create --title "test(ERP-201): automate order search" --body "..."` — body should summarize the validated case + that it's now covered. **Capture the PR URL from `gh`'s output** — you need it in the next step.
+17. Create a branch off the current one: `git checkout -b qa/<case-key-lower>-automation` (e.g. `qa/erp-201-automation`).
+18. Stage **only the new test file** (and any app fix the case revealed): `git add tests/erp-201-order-search.spec.ts`.
+19. Commit with a message referencing the case key (use the repo's commit format with the Devin trailer).
+20. `git push -u origin qa/erp-201-automation`.
+21. `gh pr create --title "test(ERP-201): automate order search" --body "..."` — body should summarize the validated case + that it's now covered. **Capture the PR URL from `gh`'s output** — you need it in the next step.
 
 If `gh` isn't authenticated, stop and ask the presenter to `gh auth login` rather than guessing. If there's no remote configured, say so — the rest of the demo (ticket update) can still proceed with a placeholder note instead of a link.
 
 ### H. Close the loop in TestTrack (presenter says "mark the story complete / update the ticket")
 Narrate this as **"updating the ticket through the TestTrack MCP."** Mechanically it's the `window.testtrack` shim (see "Updating a ticket" above).
 
-21. `browser_navigate` to `http://localhost:5173/qa.html` (or keep the existing tab) so the update is visible.
-22. Run via `browser_evaluate`, splicing in the **real PR URL from step 20**:
+22. `browser_navigate` to `http://localhost:5173/qa.html` (or keep the existing tab) so the update is visible.
+23. Run via `browser_evaluate`, splicing in the **real PR URL from step 21**:
 
     ```js
     window.testtrack.complete('ERP-201', {
@@ -162,16 +163,16 @@ Narrate this as **"updating the ticket through the TestTrack MCP."** Mechanicall
     ```
 
     Keep the summary to one or two sentences — what was validated + that it's automated now.
-23. **Navigate to the ticket to show it changed:** `browser_navigate` to `http://localhost:5173/qa.html?case=ERP-201`, then `browser_snapshot`. The drawer should show **Status: Done**, the **automated** badge, and the new comment with the **clickable PR link**. `browser_take_screenshot` so the audience sees it.
+24. **Navigate to the ticket to show it changed:** `browser_navigate` to `http://localhost:5173/qa.html?case=ERP-201`, then `browser_snapshot`. The drawer should show **Status: Done**, the **automated** badge, and the new comment with the **clickable PR link**. `browser_take_screenshot` so the audience sees it.
 
 **Narrate:** *"And the loop closes: the agent validated a manual case, wrote durable automation, opened a real PR, and pushed the result back to the ticket — status flipped to Done, automated, with a one-line summary and a link straight to the PR. That last hop is normally a context-switch a human does by hand."*
 
 ### I. Wrap and engage
 Per the **Engagement principle** in `AGENTS.md`, don't stop at "done":
-24. One-line recap: which case, what you validated, the new spec file, the green suite count, the PR, the updated ticket.
-25. Ask one open question about the presenter's real testing work — *"What does your actual test backlog look like — is it manual cases like these, or are you starting from scratch?"*
-26. Offer a structured next step (use the interactive prompt): e.g. `["Automate the other To Do case (ERP-202)" | "Point me at your real app and let's repeat this loop" | "That's the demo — wrap up"]`.
-27. One question at a time; accept off-menu answers; stop when they signal stop.
+25. One-line recap: which case, what you validated, the new spec file, the green suite count, the PR, the updated ticket.
+26. Ask one open question about the presenter's real testing work — *"What does your actual test backlog look like — is it manual cases like these, or are you starting from scratch?"*
+27. Offer a structured next step (use the interactive prompt): e.g. `["Automate the other To Do case (ERP-202)" | "Point me at your real app and let's repeat this loop" | "That's the demo — wrap up"]`.
+28. One question at a time; accept off-menu answers; stop when they signal stop.
 
 ## Resetting between runs
 The board change is persisted in `localStorage`, so a completed ticket **stays** Done on the next run. Before re-demoing, reset it: `browser_navigate` to `qa.html`, then `browser_evaluate` → `window.testtrack.reset()`. (Step F's headed test run is unaffected — that's source, not board state.)

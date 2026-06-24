@@ -24,13 +24,13 @@ For browser-control mechanics, see [`../playwright-mcp/SKILL.md`](../playwright-
 
 ## Credentials (template section: how the agent authenticates)
 
-DemoCorp is the *only* site where the agent enters credentials — they're hardcoded sandbox values:
+DemoCorp is a sandbox. During the live `run-demo/` flow, the agent may prefill the service-user email, but the presenter enters the password in the browser.
 
 | Field | Value |
 |---|---|
-| Email | `john.smith@democorp.example` |
-| Password | `Acme2024!` |
-| Role rendered after login | Procurement Manager |
+| Email | `service.user@democorp.example` |
+| Password | Any non-empty value; the presenter types it during the demo |
+| Role rendered after login | Procurement Automation |
 
 For real sites: **never enter credentials**. The user does that. See [`../browse/SKILL.md`](../browse/SKILL.md).
 

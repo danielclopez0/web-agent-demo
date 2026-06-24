@@ -377,12 +377,10 @@ export type CostCenter = {
 import type { Order, Vendor, CostCenter, User } from '../types'
 
 export const DEMO_USER: User = {
-  email: 'john.smith@democorp.example',
-  name: 'John Smith',
-  role: 'Procurement Manager',
+  email: 'service.user@democorp.example',
+  name: 'DemoCorp Service User',
+  role: 'Procurement Automation',
 }
-
-export const DEMO_PASSWORD = 'Acme2024!'
 
 export const VENDORS: Vendor[] = [
   { id: 'V-001', name: 'Vertex Technologies' },
@@ -569,7 +567,7 @@ git commit -m "feat: Button primitive + Layout shell with top nav"
 ```tsx
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { DEMO_USER, DEMO_PASSWORD } from '../data/seed'
+import { DEMO_USER } from '../data/seed'
 import type { User } from '../types'
 import { Button } from '../components/Button'
 
@@ -578,17 +576,19 @@ type Props = {
 }
 
 export function LoginPage({ onLogin }: Props) {
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(DEMO_USER.email)
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (email === DEMO_USER.email && password === DEMO_PASSWORD) {
+    if (email === DEMO_USER.email && password.trim()) {
       setError(null)
       onLogin(DEMO_USER)
+    } else if (email !== DEMO_USER.email) {
+      setError('Use the DemoCorp service user email for this sandbox.')
     } else {
-      setError('Invalid credentials. Please check your email and password.')
+      setError('Enter any password to continue the demo.')
     }
   }
 
@@ -959,7 +959,7 @@ Expected: build succeeds, `dist/assets/index-*.css` is at least ~10 kB.
 npm run dev &
 sleep 2
 open http://localhost:5173/
-# Verify: login screen → enter john.smith@democorp.example / Acme2024! →
+# Verify: login screen → enter service.user@democorp.example / anything-works →
 # Orders page with 8 rows visible → filter buttons work → Export CSV downloads a file →
 # nav to "New Order" → submit a row → returns success card → "Back to Orders" shows new row at top.
 lsof -ti:5173 | xargs kill
@@ -1024,8 +1024,8 @@ import { existsSync } from 'node:fs'
 test('login → filter orders → export CSV → submit new order', async ({ page }) => {
   // Login
   await page.goto('/')
-  await page.getByLabel('Corporate Email').fill('john.smith@democorp.example')
-  await page.getByLabel('Password').fill('Acme2024!')
+  await page.getByLabel('Corporate Email').fill('service.user@democorp.example')
+  await page.getByLabel('Password').fill('anything-works')
   await page.getByTestId('sign-in-btn').click()
 
   // Orders page loads with seed data
@@ -1123,7 +1123,7 @@ When operating any website, you are acting with the user's credentials and permi
 ## DemoCorp setup
 
 - **Dev server**: `npm run dev` on `http://localhost:5173`. Start it if not running.
-- **Login**: `john.smith@democorp.example` / `Acme2024!`
+- **Login**: `service.user@democorp.example` / `anything-works`
 - **Pages**: `/` (login), then in-app nav between Orders and New Order
 
 ## Browser-control essentials (Playwright MCP)
@@ -1171,8 +1171,8 @@ Worked end-to-end example of browser-driven agent on DemoCorp ERP, including the
 - Dev server on `http://localhost:5173` — start with `npm run dev` if not running
 
 ## Credentials
-- Email: `john.smith@democorp.example`
-- Password: `Acme2024!`
+- Email: `service.user@democorp.example`
+- Password: any non-empty value; presenter enters it during the demo
 
 ## Phases
 
@@ -1184,10 +1184,10 @@ Worked end-to-end example of browser-driven agent on DemoCorp ERP, including the
 Narrate: *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for any corporate SSO."*
 
 ### 2. Login
-4. `browser_fill_form` with `john.smith@democorp.example` / `Acme2024!`.
-5. Click Sign In. `browser_snapshot` to confirm the Orders page.
+4. Ensure Corporate Email is prefilled with `service.user@democorp.example`.
+5. Pause for the presenter to enter any password and click Sign In. `browser_snapshot` to confirm the Orders page.
 
-Narrate: *"Logged in as John Smith, Procurement Manager. Now on the Orders page — eight POs across Draft, Submitted, and Approved."*
+Narrate: *"Logged in as DemoCorp Service User, Procurement Automation. Now on the Orders page — eight POs across Draft, Submitted, and Approved."*
 
 ### 3. Filter + export the CSV
 6. Click the **Approved** filter button. `browser_snapshot` to confirm only Approved rows remain.
@@ -1423,7 +1423,7 @@ This repo ships a tiny sandbox (DemoCorp ERP) so the quickstart has something co
 Run the demo. The agent:
 
 1. Opens DemoCorp ERP in a real browser
-2. Logs in (with sandbox credentials — never real ones for external sites)
+2. Pauses for presenter authentication (service user is prefilled; any password works in the sandbox)
 3. Filters Approved orders, exports the CSV — **into this project's `exports/` directory**, not `~/Downloads`
 4. Reads the CSV locally, computes totals + top vendors + outliers
 5. Generates a self-contained HTML report with charts into `reports/`

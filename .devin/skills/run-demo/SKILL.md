@@ -19,14 +19,14 @@ The 7-phase worked example that demonstrates the **browser → CSV → local HTM
 3. `browser_navigate` to `http://localhost:5173/`, then `browser_snapshot` to confirm the login page
 4. `browser_console_messages level="error"` — should be 0 real errors
 
-**Narrate:** *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for any corporate SSO. The agent never enters credentials on real sites; for this sandbox, we use the documented demo account."*
+**Narrate:** *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for corporate SSO. The agent never enters passwords: I prefill the demo service user, then the presenter authenticates in the browser."*
 
 ### Phase 2 — Login
-5. `browser_fill_form` with `john.smith@democorp.example` / `Acme2024!` (refs from the snapshot in Phase 1)
-6. `browser_click` Sign In (`getByTestId('sign-in-btn')` or the matching ref)
-7. `browser_snapshot` to confirm the Orders page renders
+5. If the login page appears, ensure the Corporate Email field is prefilled with `service.user@democorp.example`. Fill only that email if needed.
+6. **Stop and ask the presenter to authenticate:** *"I need you to authenticate DemoCorp before I can continue. The service user is prefilled; for this sandbox, any password works. Please enter a password, click Sign In, and tell me when you're in."* Wait for the presenter.
+7. After the presenter says they're in, `browser_snapshot` to confirm the Orders page renders. The app stores this demo session in browser localStorage, so later QA-demo steps can skip login in the same Playwright browser.
 
-**Narrate:** *"Logged in as John Smith, Procurement Manager. Now on the Orders page — eight POs across Draft, Submitted, and Approved."*
+**Narrate:** *"Logged in as DemoCorp Service User, Procurement Automation. Now on the Orders page — eight POs across Draft, Submitted, and Approved."*
 
 ### Phase 3 — Filter + export
 8. Click the **Approved** filter pill (`getByRole('button', { name: 'Approved', exact: true })`)

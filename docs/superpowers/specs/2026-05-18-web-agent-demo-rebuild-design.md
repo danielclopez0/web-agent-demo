@@ -74,7 +74,7 @@ This keeps the repo itself tiny — no chart library dependency, no template eng
 
 ## Out of scope for this rebuild
 
-- Authentication beyond the hardcoded demo credentials (`john.smith@democorp.example` / `Acme2024!`)
+- Authentication beyond the demo service-user flow (`service.user@democorp.example`; any non-empty password)
 - Real backend / database — all data is in-memory seed data
 - Multi-tenant or role-based access
 - The architecture-diagram page (cut)

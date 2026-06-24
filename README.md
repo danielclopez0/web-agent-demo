@@ -11,7 +11,7 @@ This repo ships a tiny sandbox (DemoCorp ERP) so the quickstart has something co
 Run the demo. The agent:
 
 1. Opens DemoCorp ERP in a real browser
-2. Logs in (with sandbox credentials — never real ones for external sites)
+2. Pauses for presenter authentication (service user is prefilled; any password works in the sandbox)
 3. Filters Approved orders, exports the CSV — **into this project's `exports/` directory**, not `~/Downloads`
 4. Reads the CSV locally, computes totals + top vendors + outliers
 5. Generates a self-contained HTML report with charts into `reports/`
