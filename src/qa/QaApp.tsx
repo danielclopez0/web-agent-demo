@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { TestCase, CaseStatus, CasePriority, Comment } from './testCases'
 import { COLUMNS, PROJECT } from './testCases'
+import { consumeDemoResetFromUrl, resetTestTrackState } from '../lib/demoState'
 import {
   CHANGE_EVENT,
   getAllEffective,
@@ -240,7 +241,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function QaApp() {
-  const [overrides, setOverrides] = useState(() => loadOverrides())
+  const [overrides, setOverrides] = useState(() => {
+    consumeDemoResetFromUrl(resetTestTrackState)
+    return loadOverrides()
+  })
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
 
   // Expose window.testtrack (the "Jira MCP") and stay in sync with mutations.

@@ -8,6 +8,7 @@
 // "update a ticket." In a real setup this would be a Jira MCP server; here it's
 // a thin shim over local mock data so the demo can show a ticket actually change.
 
+import { TESTTRACK_OVERRIDES_STORAGE_KEY } from '../lib/demoState'
 import type { CaseStatus, Comment, TestCase } from './testCases'
 import { TEST_CASES } from './testCases'
 
@@ -18,12 +19,11 @@ export type Override = {
 }
 export type Overrides = Record<string, Override>
 
-const KEY = 'testtrack:overrides:v1'
 export const CHANGE_EVENT = 'testtrack:change'
 
 export function loadOverrides(): Overrides {
   try {
-    const raw = localStorage.getItem(KEY)
+    const raw = localStorage.getItem(TESTTRACK_OVERRIDES_STORAGE_KEY)
     return raw ? (JSON.parse(raw) as Overrides) : {}
   } catch {
     return {}
@@ -31,7 +31,7 @@ export function loadOverrides(): Overrides {
 }
 
 function save(o: Overrides) {
-  localStorage.setItem(KEY, JSON.stringify(o))
+  localStorage.setItem(TESTTRACK_OVERRIDES_STORAGE_KEY, JSON.stringify(o))
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
@@ -104,7 +104,7 @@ export function complete(
 }
 
 export function reset() {
-  localStorage.removeItem(KEY)
+  localStorage.removeItem(TESTTRACK_OVERRIDES_STORAGE_KEY)
   window.dispatchEvent(new Event(CHANGE_EVENT))
 }
 
