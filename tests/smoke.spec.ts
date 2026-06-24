@@ -36,3 +36,50 @@ test('login → filter orders → export CSV → submit new order', async ({ pag
   await expect(page.getByTestId('new-order-success')).toBeVisible()
   await expect(page.getByText('Test ergonomic chairs')).toBeVisible()
 })
+
+test('reset demo URL clears stale ERP and TestTrack state once', async ({ page }) => {
+  await page.goto('/')
+  await page.getByLabel('Corporate Email').fill('service.user@democorp.example')
+  await page.getByLabel('Password').fill('anything-works')
+  await page.getByTestId('sign-in-btn').click()
+  await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
+  await page.evaluate(() => {
+    localStorage.setItem('testtrack:overrides:v1', JSON.stringify({ 'ERP-201': { status: 'Done', automated: true } }))
+  })
+
+  await page.goto('/?resetDemo=1')
+  await expect(page.getByTestId('login-form')).toBeVisible()
+  await expect(page).toHaveURL('/')
+  await expect(page.evaluate(() => localStorage.getItem('testtrack:overrides:v1'))).resolves.toBeNull()
+
+  await page.getByLabel('Password').fill('anything-works')
+  await page.getByTestId('sign-in-btn').click()
+  await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
+  await page.reload()
+  await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
+})
+
+test('TestTrack reset URL clears stale ticket overrides', async ({ page }) => {
+  await page.goto('/qa.html')
+  await page.evaluate(() => {
+    localStorage.setItem(
+      'democorp:user',
+      JSON.stringify({
+        email: 'service.user@democorp.example',
+        name: 'DemoCorp Service User',
+        role: 'Procurement Automation',
+      }),
+    )
+    localStorage.setItem('testtrack:overrides:v1', JSON.stringify({ 'ERP-201': { status: 'Done', automated: true } }))
+  })
+
+  await page.goto('/qa.html?resetDemo=1')
+  await expect(page).toHaveURL('/qa.html')
+  await expect(page.getByTestId('case-card-ERP-201')).toBeVisible()
+  await expect(page.evaluate(() => localStorage.getItem('testtrack:overrides:v1'))).resolves.toBeNull()
+  await expect(page.evaluate(() => localStorage.getItem('democorp:user'))).resolves.not.toBeNull()
+  await expect(page.evaluate(() => window.testtrack.get('ERP-201'))).resolves.toMatchObject({
+    status: 'To Do',
+    automated: false,
+  })
+})

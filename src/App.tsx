@@ -5,14 +5,15 @@ import { LoginPage } from './pages/LoginPage'
 import { OrdersPage } from './pages/OrdersPage'
 import { NewOrderPage } from './pages/NewOrderPage'
 import { Layout } from './components/Layout'
+import { DEMOCORP_USER_STORAGE_KEY, consumeDemoResetFromUrl } from './lib/demoState'
 
 type Page = 'orders' | 'new-order'
 
-const USER_STORAGE_KEY = 'democorp:user'
-
 const loadUser = (): User | null => {
   try {
-    const raw = localStorage.getItem(USER_STORAGE_KEY)
+    if (consumeDemoResetFromUrl()) return null
+
+    const raw = localStorage.getItem(DEMOCORP_USER_STORAGE_KEY)
     return raw ? JSON.parse(raw) : null
   } catch {
     return null
@@ -25,12 +26,12 @@ export default function App() {
   const [orders, setOrders] = useState<Order[]>(SEED_ORDERS)
 
   const handleLogin = (nextUser: User) => {
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(nextUser))
+    localStorage.setItem(DEMOCORP_USER_STORAGE_KEY, JSON.stringify(nextUser))
     setUser(nextUser)
   }
 
   const handleSignOut = () => {
-    localStorage.removeItem(USER_STORAGE_KEY)
+    localStorage.removeItem(DEMOCORP_USER_STORAGE_KEY)
     setUser(null)
   }
 

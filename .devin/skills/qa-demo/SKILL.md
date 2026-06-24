@@ -74,7 +74,7 @@ Both map to DemoCorp features that have **no Playwright coverage yet** — that'
 
 ### A. Open the board
 1. Ensure dev server is up.
-2. `browser_navigate` to `http://localhost:5173/qa.html`, then `browser_snapshot`.
+2. `browser_navigate` to `http://localhost:5173/qa.html?resetDemo=1`, then `browser_snapshot`. This clears TestTrack runtime overrides once while preserving any DemoCorp login session, so the board reflects the branch seed state before the demo starts.
 3. `browser_console_messages level="error"` — favicon 404 is benign.
 
 **Narrate:** *"This is TestTrack — our test-management tool, a separate product from the ERP. This board is the backlog of manual test cases we still need to turn into automated coverage. The four in Done already have Playwright tests; the two in To Do, tagged `needs-automation`, don't yet."*

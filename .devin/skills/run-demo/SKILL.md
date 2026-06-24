@@ -11,12 +11,22 @@ The 7-phase worked example that demonstrates the **browser → CSV → local HTM
 - Repo cloned, `npm install` done
 - Node 22 (`.nvmrc` enforces it; `nvm use` if you have nvm)
 
+## Presenter output mode
+
+During this demo, keep terminal output concise and audience-readable:
+- Say at most one short sentence before each visible browser step.
+- Do not narrate implementation details, code snippets, diffs, raw CSV contents, or full tool output.
+- Do not announce routine checks unless they fail.
+- Pause with one clear instruction when presenter authentication is required.
+- Report only the artifact paths and headline numbers at the end.
+- If a command/tool fails, summarize the issue in one sentence and continue or ask for help.
+
 ## The 7 phases
 
 ### Phase 1 — Setup
 1. Check the dev server: `curl -fsS http://localhost:5173/ >/dev/null` — if it fails, start it: `npm run dev &` and `until curl -fsS http://localhost:5173/ >/dev/null; do sleep 0.5; done`
 2. `mkdir -p exports reports` so the destinations exist
-3. `browser_navigate` to `http://localhost:5173/`, then `browser_snapshot` to confirm the login page
+3. `browser_navigate` to `http://localhost:5173/?resetDemo=1`, then `browser_snapshot` to confirm the login page. The app clears DemoCorp login and TestTrack runtime overrides once, then removes the query param, so every demo starts from clean seed state.
 4. `browser_console_messages level="error"` — should be 0 real errors
 
 **Narrate:** *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for corporate SSO. The agent never enters passwords: I prefill the demo service user, then the presenter authenticates in the browser."*
