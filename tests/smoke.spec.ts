@@ -4,11 +4,13 @@ import { existsSync } from 'node:fs'
 test('login → filter orders → export CSV → submit new order', async ({ page }) => {
   // Login
   await page.goto('/')
-  await page.getByLabel('Corporate Email').fill('john.smith@acme-corp.com')
-  await page.getByLabel('Password').fill('Acme2024!')
+  await page.getByLabel('Corporate Email').fill('service.user@democorp.example')
+  await page.getByLabel('Password').fill('anything-works')
   await page.getByTestId('sign-in-btn').click()
 
-  // Orders page loads with seed data
+  // Orders page loads with seed data and survives reload via the demo session
+  await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
+  await page.reload()
   await expect(page.getByRole('heading', { name: 'Purchase Orders' })).toBeVisible()
   await expect(page.getByText('PO-2026-001')).toBeVisible()
 

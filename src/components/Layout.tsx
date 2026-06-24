@@ -35,6 +35,15 @@ export function Layout({ user, currentPage, onNavigate, onSignOut, children }: P
             </div>
           </div>
           <div className="flex items-center gap-4 text-sm">
+            <a
+              href="/qa.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="testtrack-link"
+              className="text-slate-500 hover:text-slate-900"
+            >
+              Test Cases ↗
+            </a>
             <div className="text-right">
               <div className="font-medium text-slate-900">{user.name}</div>
               <div className="text-slate-500 text-xs">{user.role}</div>

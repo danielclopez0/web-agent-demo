@@ -41,15 +41,18 @@ If your platform doesn't expose a structured tool, ask in prose with the options
 
 ## Skills map
 
-Five skills, each with one responsibility. Load them as you need them.
+Six skills, each with one responsibility. Load them as you need them.
 
 | Skill | What it owns |
 |---|---|
 | [`.devin/skills/playwright-mcp/SKILL.md`](./.devin/skills/playwright-mcp/SKILL.md) | **Reference** — Playwright MCP tools, snapshot/ref idioms, download capture pattern, `file://` workaround, console-error checks. Every other skill links here for mechanics. |
 | [`.devin/skills/browse/SKILL.md`](./.devin/skills/browse/SKILL.md) | **Contract** — generic BYO-site flow: security rules, user-handles-login pattern, training mode for teaching new sites. |
 | [`.devin/skills/democorp/SKILL.md`](./.devin/skills/democorp/SKILL.md) | **Template + site reference** — how to operate DemoCorp specifically, *also* shaped as a copy-paste template for writing your own site-control skill. |
-| [`.devin/skills/run-demo/SKILL.md`](./.devin/skills/run-demo/SKILL.md) | **Orchestrator** — the 7-phase worked walkthrough (login → filter → export → analyze → HTML report → open). Composes democorp + analyze. |
+| [`.devin/skills/run-demo/SKILL.md`](./.devin/skills/run-demo/SKILL.md) | **Autopilot orchestrator** — the 7-phase hands-off walkthrough (login → filter → export → analyze → HTML report → open). Composes democorp + analyze. Trigger: **"run the demo."** |
+| [`.devin/skills/qa-demo/SKILL.md`](./.devin/skills/qa-demo/SKILL.md) | **Presenter-driven orchestrator** — the QA loop: open the TestTrack board → pick a manual test case → validate it live in the browser → (after presenter approval) write a durable Playwright test → run the suite headed. Trigger: **"show me our test cases" / "let's do a test case."** |
 | [`.devin/skills/analyze/SKILL.md`](./.devin/skills/analyze/SKILL.md) | **Artifact builder** — CSV → self-contained HTML report with charts. |
+
+**Two different demos — don't confuse them.** "run the demo" is hands-off autopilot (`run-demo/`). "show me our test cases" / "let's do a test case" is the presenter-paced QA/automation loop (`qa-demo/`) where the human approves each step. If a bare "demo" is ambiguous, ask which one.
 
 ## What you can do
 
@@ -57,10 +60,12 @@ Five skills, each with one responsibility. Load them as you need them.
 
 | User says | Skill to follow |
 |-----------|---|
-| "run the demo" | `run-demo/` |
-| "create an order for ..." / "submit a PO" / "filter orders" / "export the CSV" | `democorp/` |
+| "run the demo" (hands-off autopilot) | `run-demo/` |
+| "show me our test cases" / "open TestTrack" | `qa-demo/` (just opens the board, then waits) |
+| "let's do a test case" / "automate ERP-201" (presenter-driven) | `qa-demo/` (full validate → approve → write test → run headed loop) |
+| "create an order for ..." / "submit a PO" / "filter orders" / "search orders" / "approve PO-..." / "export the CSV" | `democorp/` |
 | "analyze this CSV" / "make me a report" | `analyze/` |
-| "run the tests" | shell: `npm test` (or `npx playwright test --headed` to watch) |
+| "run the tests" / "run the test suite" | shell: `npm run test:headed` (always headed for demo visibility). After reporting results, ask whether to rerun slower with `npm run test:headed:slow` so the audience can watch. |
 
 ### Any website
 
@@ -72,8 +77,9 @@ Five skills, each with one responsibility. Load them as you need them.
 ## DemoCorp quick-reference
 
 - Dev server: `npm run dev` on `http://localhost:5173`. Start it if not running.
-- Login: `john.smith@acme-corp.com` / `Acme2024!`.
-- Three pages: login, Orders (list + filter + Export CSV), New Order (form).
+- Login: service user `service.user@democorp.example`; presenter enters any non-empty password during the demo.
+- Three pages: login, Orders (list + filter + **search** + per-row **Approve** + Export CSV), New Order (form).
+- **TestTrack** (the mock QA tool, a separate "site"): `http://localhost:5173/qa.html`. A Jira-style board of manual test cases to automate. Tickets are mutable at runtime via `window.testtrack` (the "TestTrack MCP" shim in `src/qa/store.ts`) — the agent uses it to mark a story Done and comment a PR link. Owned by `qa-demo/`.
 
 Full details + page contracts in `.devin/skills/democorp/SKILL.md`.
 

@@ -1,12 +1,10 @@
 import type { Order, Vendor, CostCenter, User } from '../types'
 
 export const DEMO_USER: User = {
-  email: 'john.smith@acme-corp.com',
-  name: 'John Smith',
-  role: 'Procurement Manager',
+  email: 'service.user@democorp.example',
+  name: 'DemoCorp Service User',
+  role: 'Procurement Automation',
 }
-
-export const DEMO_PASSWORD = 'Acme2024!'
 
 export const VENDORS: Vendor[] = [
   { id: 'V-001', name: 'Vertex Technologies' },

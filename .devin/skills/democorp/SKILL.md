@@ -24,13 +24,13 @@ For browser-control mechanics, see [`../playwright-mcp/SKILL.md`](../playwright-
 
 ## Credentials (template section: how the agent authenticates)
 
-DemoCorp is the *only* site where the agent enters credentials — they're hardcoded sandbox values:
+DemoCorp is a sandbox. During the live `run-demo/` flow, the agent may prefill the service-user email, but the presenter enters the password in the browser.
 
 | Field | Value |
 |---|---|
-| Email | `john.smith@acme-corp.com` |
-| Password | `Acme2024!` |
-| Role rendered after login | Procurement Manager |
+| Email | `service.user@democorp.example` |
+| Password | Any non-empty value; the presenter types it during the demo |
+| Role rendered after login | Procurement Automation |
 
 For real sites: **never enter credentials**. The user does that. See [`../browse/SKILL.md`](../browse/SKILL.md).
 
@@ -61,10 +61,15 @@ There is no router — page state is held in `App.tsx`. Navigation happens via i
 |---|---|
 | Heading | `getByRole('heading', { name: 'Purchase Orders' })` |
 | Filter pills | `getByRole('button', { name: 'All' \| 'Draft' \| 'Submitted' \| 'Approved', exact: true })` |
+| Search box | `getByTestId('order-search')` — free-text match across PO #, vendor, description; composes with the status filter |
 | Export CSV button | `getByTestId('export-csv-btn')` |
-| Order rows | `<tr>` under `<tbody>`; first `<td>` is the monospace PO ID |
+| Order rows | `getByTestId('order-row-<PO id>')`; first `<td>` is the monospace PO ID |
+| Status badge (per row) | `getByTestId('status-<PO id>')` — text is `Draft` / `Submitted` / `Approved` |
+| Approve button (per row) | `getByTestId('approve-btn-<PO id>')` — present only on non-Approved rows; sets status to Approved in place |
 
-The table re-renders when a filter is clicked. Re-snapshot afterward.
+The table re-renders when a filter is clicked, when search text changes, or after an Approve. Re-snapshot afterward.
+
+> **Approve is a write.** Clicking Approve changes an order's status. Confirm with the user before clicking it, per the security rules in `AGENTS.md`.
 
 ### NewOrderPage
 
@@ -92,6 +97,17 @@ The table re-renders when a filter is clicked. Re-snapshot afterward.
 1. On OrdersPage, click the filter pill (`All` / `Draft` / `Submitted` / `Approved`).
 2. Re-snapshot.
 3. Count rows under `<tbody>`. Report.
+
+### Search orders
+1. Type into `getByTestId('order-search')` — matches PO #, vendor, or description.
+2. Re-snapshot; the table narrows live. Search composes with the active status filter.
+3. Clear the box to restore the full (filtered) list. Read-only — no confirmation needed.
+
+### Approve an order (write — confirm first)
+1. Find the target row (`getByTestId('order-row-<id>')`); non-Approved rows show an Approve button.
+2. **Confirm:** *"I'm about to approve <PO id>. That changes its status. Proceed?"* Wait for yes.
+3. Click `getByTestId('approve-btn-<id>')`. Re-snapshot.
+4. Verify `getByTestId('status-<id>')` now reads `Approved` and the row's Approve button is gone.
 
 ### Export CSV to the project directory
 Use the download-capture pattern in [`../playwright-mcp/SKILL.md`](../playwright-mcp/SKILL.md). Save to `./exports/<filename>` — never `~/Downloads`.
