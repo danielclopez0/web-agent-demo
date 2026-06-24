@@ -377,7 +377,7 @@ export type CostCenter = {
 import type { Order, Vendor, CostCenter, User } from '../types'
 
 export const DEMO_USER: User = {
-  email: 'john.smith@acme-corp.com',
+  email: 'john.smith@democorp.example',
   name: 'John Smith',
   role: 'Procurement Manager',
 }
@@ -959,7 +959,7 @@ Expected: build succeeds, `dist/assets/index-*.css` is at least ~10 kB.
 npm run dev &
 sleep 2
 open http://localhost:5173/
-# Verify: login screen → enter john.smith@acme-corp.com / Acme2024! →
+# Verify: login screen → enter john.smith@democorp.example / Acme2024! →
 # Orders page with 8 rows visible → filter buttons work → Export CSV downloads a file →
 # nav to "New Order" → submit a row → returns success card → "Back to Orders" shows new row at top.
 lsof -ti:5173 | xargs kill
@@ -1024,7 +1024,7 @@ import { existsSync } from 'node:fs'
 test('login → filter orders → export CSV → submit new order', async ({ page }) => {
   // Login
   await page.goto('/')
-  await page.getByLabel('Corporate Email').fill('john.smith@acme-corp.com')
+  await page.getByLabel('Corporate Email').fill('john.smith@democorp.example')
   await page.getByLabel('Password').fill('Acme2024!')
   await page.getByTestId('sign-in-btn').click()
 
@@ -1123,7 +1123,7 @@ When operating any website, you are acting with the user's credentials and permi
 ## DemoCorp setup
 
 - **Dev server**: `npm run dev` on `http://localhost:5173`. Start it if not running.
-- **Login**: `john.smith@acme-corp.com` / `Acme2024!`
+- **Login**: `john.smith@democorp.example` / `Acme2024!`
 - **Pages**: `/` (login), then in-app nav between Orders and New Order
 
 ## Browser-control essentials (Playwright MCP)
@@ -1171,7 +1171,7 @@ Worked end-to-end example of browser-driven agent on DemoCorp ERP, including the
 - Dev server on `http://localhost:5173` — start with `npm run dev` if not running
 
 ## Credentials
-- Email: `john.smith@acme-corp.com`
+- Email: `john.smith@democorp.example`
 - Password: `Acme2024!`
 
 ## Phases
@@ -1184,7 +1184,7 @@ Worked end-to-end example of browser-driven agent on DemoCorp ERP, including the
 Narrate: *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for any corporate SSO."*
 
 ### 2. Login
-4. `browser_fill_form` with `john.smith@acme-corp.com` / `Acme2024!`.
+4. `browser_fill_form` with `john.smith@democorp.example` / `Acme2024!`.
 5. Click Sign In. `browser_snapshot` to confirm the Orders page.
 
 Narrate: *"Logged in as John Smith, Procurement Manager. Now on the Orders page — eight POs across Draft, Submitted, and Approved."*

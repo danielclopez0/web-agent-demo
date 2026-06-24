@@ -4,7 +4,7 @@ import { existsSync } from 'node:fs'
 test('login → filter orders → export CSV → submit new order', async ({ page }) => {
   // Login
   await page.goto('/')
-  await page.getByLabel('Corporate Email').fill('john.smith@acme-corp.com')
+  await page.getByLabel('Corporate Email').fill('john.smith@democorp.example')
   await page.getByLabel('Password').fill('Acme2024!')
   await page.getByTestId('sign-in-btn').click()
 

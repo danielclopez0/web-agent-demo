@@ -22,7 +22,7 @@ The 7-phase worked example that demonstrates the **browser → CSV → local HTM
 **Narrate:** *"DemoCorp ERP — a small procurement sandbox. The login page is a stand-in for any corporate SSO. The agent never enters credentials on real sites; for this sandbox, we use the documented demo account."*
 
 ### Phase 2 — Login
-5. `browser_fill_form` with `john.smith@acme-corp.com` / `Acme2024!` (refs from the snapshot in Phase 1)
+5. `browser_fill_form` with `john.smith@democorp.example` / `Acme2024!` (refs from the snapshot in Phase 1)
 6. `browser_click` Sign In (`getByTestId('sign-in-btn')` or the matching ref)
 7. `browser_snapshot` to confirm the Orders page renders
 

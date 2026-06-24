@@ -69,12 +69,19 @@ The agent reads `AGENTS.md`, finds `.devin/skills/run-demo/`, and walks the 7 ph
 
 | You say | What happens |
 |---|---|
-| "run the demo" | Full browser → CSV → HTML report walkthrough |
+| "run the demo" | Hands-off autopilot: browser → CSV → HTML report walkthrough |
+| "show me our test cases" | Opens **TestTrack**, the mock QA board (looks like Jira), in a new tab |
+| "let's do a test case" | Presenter-driven: agent validates a manual case live, you approve, it writes the Playwright test, runs the suite headed, opens a PR, and marks the ticket Done |
 | "create an order for 10 laptops from Vertex Technologies" | Agent fills the New Order form, submits |
 | "export approved orders and make me a report" | Filter, export, analyze, render, open |
-| "run the tests" | `npm test` — one Playwright smoke test |
+| "run the tests" | `npm test` — the Playwright suite |
 | "go to https://your-internal-tool.com" | Agent opens the site, asks you to log in, then operates |
 | "let's explore [some SaaS dashboard]" | Collaborative training session — agent maps the site, writes a new skill |
+
+### Two demos, on purpose
+
+- **`run the demo`** — the **autopilot** loop (browser → file → report). Hands-off; great for a first "wow."
+- **`let's do a test case`** — the **QA / test-automation** loop, paced by *you*. Pull up the **TestTrack** board (a mock Jira-style tool hosted at `/qa.html`), point the agent at a manual test case with no coverage, watch it drive the browser, approve that it did it right, and then it writes a **durable Playwright test**. Run the whole suite headed, have it open a **real GitHub PR**, and finally **"update the ticket via the TestTrack MCP"** — which moves the story to Done and posts a comment with a one-line summary and a clickable link to the PR. (The TestTrack "MCP" is a small client-side shim over mock data — `window.testtrack` in `src/qa/store.ts` — so the ticket genuinely changes on screen.) This mirrors how you actually work with the agent, with a human approval gate at each step.
 
 ## Use it with your own sites
 
@@ -111,19 +118,23 @@ Recommended: for real systems, use a **limited or service account** rather than 
 
 ```
 web-agent-demo/
-├── src/                 React app (3 pages, ~700 lines)
-│   ├── pages/           LoginPage, OrdersPage, NewOrderPage
+├── index.html           DemoCorp ERP entry
+├── qa.html              TestTrack entry (the mock QA board — a separate "site")
+├── src/
+│   ├── pages/           LoginPage, OrdersPage (filter + search + approve), NewOrderPage
 │   ├── components/      Layout, Button
 │   ├── lib/csv.ts       CSV export utility (Blob download)
-│   ├── data/seed.ts     Demo data
+│   ├── data/seed.ts     DemoCorp demo data
+│   ├── qa/              TestTrack board: QaApp.tsx + testCases.ts (seed) + store.ts (window.testtrack "MCP")
 │   └── App.tsx          Page-state routing
-├── tests/smoke.spec.ts  One Playwright test (login + export + new order)
+├── tests/smoke.spec.ts  Playwright smoke test (login + filter + export + new order)
 ├── AGENTS.md            Agent contract (auto-read by coding agents)
 ├── .devin/skills/       The actual product
 │   ├── playwright-mcp/  MCP reference (tools, idioms, gotchas)
 │   ├── browse/          Generic BYO-site contract + training mode
 │   ├── democorp/        DemoCorp site reference + template for your own
-│   ├── run-demo/        7-phase worked walkthrough (the wow moment)
+│   ├── run-demo/        7-phase autopilot walkthrough (the wow moment)
+│   ├── qa-demo/         Presenter-driven QA loop (test case → live validate → write test)
 │   └── analyze/         CSV → HTML report
 ├── docs/superpowers/    Design spec + implementation plan
 └── public/              Static assets

@@ -22,7 +22,16 @@ export default function App() {
       onNavigate={setPage}
       onSignOut={() => setUser(null)}
     >
-      {page === 'orders' && <OrdersPage orders={orders} />}
+      {page === 'orders' && (
+        <OrdersPage
+          orders={orders}
+          onApprove={(id) =>
+            setOrders((prev) =>
+              prev.map((o) => (o.id === id ? { ...o, status: 'Approved' } : o)),
+            )
+          }
+        />
+      )}
       {page === 'new-order' && (
         <NewOrderPage
           onCreate={(order) => setOrders([order, ...orders])}

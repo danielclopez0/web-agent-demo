@@ -1,7 +1,7 @@
 import type { Order, Vendor, CostCenter, User } from '../types'
 
 export const DEMO_USER: User = {
-  email: 'john.smith@acme-corp.com',
+  email: 'john.smith@democorp.example',
   name: 'John Smith',
   role: 'Procurement Manager',
 }

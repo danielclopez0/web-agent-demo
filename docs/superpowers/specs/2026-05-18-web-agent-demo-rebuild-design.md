@@ -74,7 +74,7 @@ This keeps the repo itself tiny — no chart library dependency, no template eng
 
 ## Out of scope for this rebuild
 
-- Authentication beyond the hardcoded demo credentials (`john.smith@acme-corp.com` / `Acme2024!`)
+- Authentication beyond the hardcoded demo credentials (`john.smith@democorp.example` / `Acme2024!`)
 - Real backend / database — all data is in-memory seed data
 - Multi-tenant or role-based access
 - The architecture-diagram page (cut)
