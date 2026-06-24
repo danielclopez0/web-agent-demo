@@ -65,7 +65,7 @@ Six skills, each with one responsibility. Load them as you need them.
 | "let's do a test case" / "automate ERP-201" (presenter-driven) | `qa-demo/` (full validate → approve → write test → run headed loop) |
 | "create an order for ..." / "submit a PO" / "filter orders" / "search orders" / "approve PO-..." / "export the CSV" | `democorp/` |
 | "analyze this CSV" / "make me a report" | `analyze/` |
-| "run the tests" / "run the test suite" | shell: `npm run test:headed` (always headed for demo visibility). After reporting results, ask whether to rerun slower so the audience can watch. |
+| "run the tests" / "run the test suite" | shell: `npm run test:headed` (always headed for demo visibility). After reporting results, ask whether to rerun slower with `npm run test:headed:slow` so the audience can watch. |
 
 ### Any website
 
